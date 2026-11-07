@@ -1,0 +1,81 @@
+/* Rewards: gliding caret, petals, milestones, daily ring */
+.lb-bloom-layer { position: fixed; inset: 0; pointer-events: none; z-index: 10000; overflow: hidden; }
+
+/* gliding caret */
+body.lb-glide .markdown-source-view .cm-cursorLayer { visibility: hidden; }
+.lb-caret {
+  position: fixed; left: 0; top: 0; width: 2px; pointer-events: none; z-index: 30; opacity: 0;
+  transform: translate(var(--lb-cx, 0), var(--lb-cy, 0)); height: var(--lb-ch, 1em);
+  transition: transform .11s cubic-bezier(.2,.8,.2,1), height .11s ease, opacity .18s ease;
+  will-change: transform;
+}
+.lb-caret.no-anim { transition: opacity .18s ease; }
+.lb-caret.is-on { opacity: 1; }
+.lb-caret::after {
+  content: ""; position: absolute; inset: 0; border-radius: 2px;
+  background: var(--lb-accent, #ff5a6f);
+  box-shadow: 0 0 10px var(--lb-accent, #ff5a6f), 0 0 2px var(--lb-accent, #ff5a6f);
+  animation: lb-breathe 1.15s ease-in-out infinite;
+}
+.lb-caret.is-typing::after { animation: none; box-shadow: 0 0 14px var(--lb-accent, #ff5a6f); }
+@keyframes lb-breathe { 50% { opacity: .25; box-shadow: 0 0 2px var(--lb-accent, #ff5a6f); } }
+
+/* petals */
+.lb-p {
+  position: fixed; pointer-events: none; line-height: 1; left: var(--x); top: var(--y);
+  font-size: var(--s, 8px);
+  color: hsl(var(--h, 350) 100% 70%);
+  text-shadow: 0 0 6px currentColor;
+  transform: translate(-50%, -50%);
+  animation: lb-fly var(--t, .7s) cubic-bezier(.15,.7,.3,1) forwards;
+}
+@keyframes lb-fly {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(.3) rotate(0deg); }
+  15%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1) rotate(var(--r)); }
+}
+
+/* milestone toast */
+.lb-toast {
+  position: fixed; left: 50%; top: 14%;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  font-family: "LoveBites Fraunces", "Fraunces", var(--font-text, serif); font-style: italic;
+  font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 72;
+  color: var(--lb-accent, #ff5a6f);
+  text-shadow: 0 0 22px color-mix(in srgb, var(--lb-accent, #ff5a6f) 45%, transparent);
+  animation: lb-toast 2.8s cubic-bezier(.2,.8,.2,1) forwards;
+}
+.lb-orn { font-size: 13px; letter-spacing: .5em; opacity: .75; font-style: normal; }
+.lb-toast-text { font-size: 34px; font-weight: 400; letter-spacing: .01em; }
+.lb-toast-sub { font-size: 14px; opacity: .7; letter-spacing: .2em; text-transform: uppercase; font-style: normal; }
+@keyframes lb-toast {
+  0%   { opacity: 0; transform: translate(-50%, 18px) scale(.92); filter: blur(8px); font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 72, "wght" 200; }
+  20%  { opacity: 1; transform: translate(-50%, 0) scale(1); filter: blur(0); font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 72, "wght" 500; }
+  75%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -12px) scale(1.03); filter: blur(4px); font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 72, "wght" 300; }
+}
+
+/* goal flash */
+.lb-flash {
+  position: fixed; inset: 0;
+  background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--lb-accent, #ff5a6f) 26%, transparent), transparent 62%);
+  animation: lb-flash 1.8s ease-out forwards;
+}
+@keyframes lb-flash { from { opacity: 1; } to { opacity: 0; } }
+
+/* daily ring in the status bar */
+.lb-ring { display: inline-flex; align-items: center; gap: 6px; cursor: default; }
+.lb-ring svg { width: 13px; height: 13px; transform: rotate(-90deg); overflow: visible; }
+.lb-ring circle { fill: none; stroke-width: 2.4; }
+.lb-ring-bg { stroke: color-mix(in srgb, var(--lb-accent, #ff5a6f) 22%, transparent); }
+.lb-ring-fg { stroke-dasharray: var(--dash); stroke-dashoffset: var(--off); stroke: var(--lb-accent, #ff5a6f); stroke-linecap: round; transition: stroke-dashoffset .6s cubic-bezier(.2,.8,.2,1); }
+.lb-ring.is-pulse svg { animation: lb-pulse .9s cubic-bezier(.2,.8,.2,1); }
+.lb-ring.is-done .lb-ring-fg { filter: drop-shadow(0 0 3px var(--lb-accent, #ff5a6f)); }
+.lb-ring.is-done .lb-ring-text { color: var(--lb-accent, #ff5a6f); }
+@keyframes lb-pulse { 40% { transform: rotate(-90deg) scale(1.6); } }
+
+body.lb-calm *, body.lb-calm *::before, body.lb-calm *::after { animation: none !important; transition: none !important; }
+
+
+/* a custom accent from settings wins over the palette, with or without the full look */
+body.lb-custom-accent.theme-light, body.lb-custom-accent.theme-dark { --lb-accent: var(--lb-accent-user); }

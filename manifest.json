@@ -1,0 +1,10 @@
+{
+	"id": "lovebites",
+	"name": "LoveBites",
+	"version": "1.0.0",
+	"minAppVersion": "1.15.0",
+	"description": "Turn your vault into an animated writing pad that rewards every word, with a book-style reading mode, smooth typewriter scrolling and writing statistics.",
+	"author": "Zahin Tapadar",
+	"authorUrl": "https://github.com/ZahinTapadar",
+	"isDesktopOnly": true
+}

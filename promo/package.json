@@ -1,0 +1,20 @@
+{
+	"name": "lovebites-promo",
+	"private": true,
+	"scripts": {
+		"studio": "remotion studio",
+		"render": "remotion render Promo out/lovebites.mp4 --codec h264 --crf 18",
+		"still": "remotion still Promo out/cover.png --frame 40"
+	},
+	"dependencies": {
+		"@remotion/cli": "4.0.300",
+		"@remotion/google-fonts": "4.0.300",
+		"react": "18.3.1",
+		"react-dom": "18.3.1",
+		"remotion": "4.0.300"
+	},
+	"devDependencies": {
+		"@types/react": "18.3.12",
+		"typescript": "5.7.2"
+	}
+}
