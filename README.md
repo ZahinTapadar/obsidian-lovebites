@@ -6,6 +6,8 @@
 
 <p align="center"><em>An animated writing pad that rewards every word, and a reader that turns your notes into a book.</em></p>
 
+<p align="center"><a href="https://github.com/ZahinTapadar/obsidian-lovebites/releases/download/1.0.0/lovebites-tour.mp4"><img src="images/tour.png" alt="LoveBites title card — watch the 27-second tour" width="640"></a><br><sub>▶ Watch the 27-second tour</sub></p>
+
 ---
 
 LoveBites is a plugin for people who write about what they read. It makes Obsidian feel less like a database and more like a desk: paper, ink, a little ceremony when you write, and a quiet page when you read.
