@@ -28,13 +28,16 @@ export default class LoveBitesPlugin extends Plugin {
 	private typingTimer = 0;
 	private bookWords = 0;
 	private glides = new WeakMap<HTMLElement, number>();
-	private mainDoc = activeDocument;
-	private docs = new Set<Document>([activeDocument]); // main window plus any popouts, for body classes
+	private mainDoc!: Document;
+	private docs = new Set<Document>(); // main window plus any popouts, for body classes
 	private requestSave = debounce(() => void this.saveSettings(), 1500, true);
 	private refreshStats = debounce(() => this.statsViews().forEach((v) => v.render(false)), 400, false);
 
 	async onload(): Promise<void> {
 		await this.loadSettings();
+		// the workspace's own document; activeDocument can be a blank internal page when the plugin is enabled from Settings
+		this.mainDoc = this.app.workspace.containerEl.doc;
+		this.docs.add(this.mainDoc);
 
 		const body = this.mainDoc.body;
 		this.layer = body.createDiv({ cls: "lb-bloom-layer" });
@@ -336,11 +339,12 @@ export default class LoveBitesPlugin extends Plugin {
 		const running = typeof fm.author === "string" ? `${fm.author}  ·  ${title}` : title;
 		view.containerEl.setCssProps({ "--lb-running": JSON.stringify(running) });
 		this.bookWords = countWords(stripFrontmatter(view.data));
-		const scroller = view.containerEl.querySelector<HTMLElement>(".markdown-preview-view");
-		if (scroller) {
-			scroller.scrollTop = 0;
-			this.updateProgress(scroller);
-		}
+		// a book opens at its first page; wait a frame so the preview has rendered before scrolling it
+		window.setTimeout(() => {
+			view.previewMode.applyScroll(0);
+			const scroller = view.containerEl.querySelector<HTMLElement>(".markdown-preview-view");
+			if (scroller) this.updateProgress(scroller);
+		}, 60);
 	}
 
 	private updateProgress(el: HTMLElement): void {
