@@ -1,12 +1,10 @@
 <p align="center">
-  <img src="images/hero.gif" alt="Writing in LoveBites: a gliding pink caret, petals rising as words appear, and a bloom at a hundred words" width="860">
+  <a href="https://github.com/ZahinTapadar/obsidian-lovebites/releases/download/1.0.0/lovebites-tour.mp4"><img src="images/tour.gif" alt="A tour of LoveBites: writing with petals and blooms, Reading mode as a book page, writing statistics and a bookshelf" width="860"></a>
 </p>
 
 <h1 align="center">LoveBites</h1>
 
 <p align="center"><em>An animated writing pad that rewards every word, and a reader that turns your notes into a book.</em></p>
-
-<p align="center"><a href="https://github.com/ZahinTapadar/obsidian-lovebites/releases/download/1.0.0/lovebites-tour.mp4"><img src="images/tour.png" alt="LoveBites title card — watch the 27-second tour" width="640"></a><br><sub>▶ Watch the 27-second tour</sub></p>
 
 ---
 
@@ -20,7 +18,7 @@ LoveBites is a plugin for people who write about what they read. It makes Obsidi
 - **Smooth typewriter scrolling** keeps the line you are writing at a fixed height and glides the page up as you go. No separate typewriter plugin needed.
 - **The look** — warm paper by day, rose-on-plum by night; Fraunces headings that grow heavier as your pointer rests on them; a shimmering note title; a slow aurora behind each page; paper grain; quiet, near-invisible chrome.
 
-<p align="center"><img src="images/writing.png" alt="A book note in Writing mode with Fraunces headings and the pink caret" width="820"></p>
+<p align="center"><img src="images/hero.gif" alt="Writing in LoveBites: a gliding pink caret, petals rising as words appear, and a bloom at a hundred words" width="820"></p>
 
 ## Reading mode
 
@@ -69,17 +67,6 @@ LoveBites makes no network requests, collects no telemetry and only reads the no
 - [Fraunces](https://github.com/undercasetype/Fraunces) by Undercase Type, embedded under the SIL Open Font License 1.1 (`fonts/OFL.txt`).
 - The palette comes from the [LoveBites](https://github.com/flyingcakes85/LoveBites) Linux rice by flyingcakes85.
 - Book covers in the screenshots are original typographic designs.
-
-## Development
-
-```bash
-npm install
-npm run build      # type-check, build styles.css (with embedded font) and main.js
-npm test           # statistics logic
-npx eslint src     # Obsidian's own lint rules
-```
-
-The promo video lives in `promo/` (Remotion): `cd promo && npm install && npm run render`.
 
 ## License
 
