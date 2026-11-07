@@ -4,3 +4,4 @@ data.json
 .DS_Store
 promo/node_modules/
 promo/out/
+promo-install.log
