@@ -2,8 +2,4 @@ node_modules/
 main.js
 data.json
 .DS_Store
-promo/node_modules/
-promo/out/
 promo-install.log
-promo/public/*.mov
-promo/public/*.mp4

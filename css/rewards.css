@@ -74,7 +74,6 @@ body.lb-glide .markdown-source-view .cm-cursorLayer { visibility: hidden; }
 .lb-ring.is-done .lb-ring-text { color: var(--lb-accent, #ff5a6f); }
 @keyframes lb-pulse { 40% { transform: rotate(-90deg) scale(1.6); } }
 
-body.lb-calm *, body.lb-calm *::before, body.lb-calm *::after { animation: none !important; transition: none !important; }
 
 
 /* a custom accent from settings wins over the palette, with or without the full look */

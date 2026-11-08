@@ -2,7 +2,7 @@
 .theme-light { --lb-h0: #efe4e1; --lb-h1: #ffd3d9; --lb-h2: #ff9aa8; --lb-h3: #ff5a6f; --lb-h4: #c8102e; }
 .theme-dark  { --lb-h0: #2f2629; --lb-h1: #5a2a35; --lb-h2: #8f3446; --lb-h3: #d24a60; --lb-h4: #ff7d8f; }
 
-.lb-stats { padding: 22px 20px 40px !important; font-family: var(--font-text); }
+.workspace-leaf-content .view-content.lb-stats { padding: 22px 20px 40px; font-family: var(--font-text); }
 .lb-eyebrow { font-family: var(--font-interface); font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--text-faint); }
 .lb-stats-title { font-family: "LoveBites Fraunces", "Fraunces", var(--font-text); font-style: italic; font-size: 34px; line-height: 1.1; color: var(--text-normal);
   font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144, "wght" 380; margin: 2px 0 14px; }

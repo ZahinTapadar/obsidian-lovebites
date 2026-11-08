@@ -80,8 +80,6 @@ body.lovebites ::selection { background: color-mix(in srgb, var(--lb-accent) 26%
 /* ---- the page ----------------------------------------------------------- */
 body.lovebites .markdown-preview-view,
 body.lovebites .markdown-source-view.mod-cm6 .cm-scroller { font-size: var(--font-text-size); }
-body.lovebites .markdown-preview-view .markdown-preview-sizer { padding-bottom: 35vh !important; }
-body.lovebites .markdown-source-view.mod-cm6 .cm-sizer { padding-bottom: 35vh !important; }
 body.lovebites .markdown-rendered p,
 body.lovebites .markdown-source-view .cm-line { letter-spacing: .003em; }
 
@@ -156,7 +154,7 @@ body.lovebites .cm-hashtag { border-radius: 99px; padding: .05em .7em; font-fami
 body.lovebites input[type="checkbox"] { border-radius: 50%; }
 body.lovebites:not(.lb-no-motion) input[type="checkbox"]:checked { animation: lb-pop .35s var(--lb-ease); }
 @keyframes lb-pop { 40% { transform: scale(1.35); } }
-body.lovebites .markdown-rendered .task-list-item.is-checked { color: var(--lb-faint); text-decoration-color: var(--lb-accent); }
+body.lovebites .markdown-rendered .task-list-item.is-checked { color: var(--lb-faint); }
 
 /* Callouts: borderless, tinted */
 body.lovebites .callout { border: none; border-radius: 14px; background: color-mix(in srgb, var(--lb-accent) 7%, var(--lb-bg)); }
@@ -199,7 +197,7 @@ body.lovebites:not(.lb-no-motion) .workspace-leaf-content[data-type="markdown"] 
 @keyframes lb-rise { from { opacity: 0; transform: translateY(10px); filter: blur(2px); } }
 
 /* ---- Home --------------------------------------------------------------- */
-body.lovebites .home .metadata-container { display: none !important; }
+body.lovebites .home { --metadata-display-reading: none; --metadata-display-editing: none; }
 body.lovebites .home .inline-title { display: none; }
 body.lovebites .home.markdown-rendered h1,
 body.lovebites .home .markdown-preview-section h1,
@@ -216,7 +214,7 @@ body.lovebites {
     --bases-cards-background: transparent; --bases-cards-cover-background: transparent;
     --bases-cards-shadow: none; --bases-cards-shadow-hover: none; --bases-cards-border-width: 0;
 }
-body.lovebites .bases-cards-item { overflow: visible !important; }
+body.lovebites .bases-cards-item { overflow: visible; }
 body.lovebites .bases-cards-cover {
     border-radius: 6px 10px 10px 6px; overflow: hidden;
     box-shadow: 0 1px 2px rgba(0,0,0,.18), 0 10px 24px -12px rgba(0,0,0,.45), inset 4px 0 6px -4px rgba(0,0,0,.35);
@@ -237,7 +235,7 @@ body.lovebites .workspace-tab-header-container,
 body.lovebites .workspace-tabs .workspace-tab-header,
 body.lovebites .view-header,
 body.lovebites .view-header-title-container { background: var(--lb-bg); }
-body.lovebites .workspace-tab-header { border: none !important; }
+body.lovebites .workspace-tab-header { border: none; }
 body.lovebites .workspace-tab-header-inner { opacity: .55; position: relative; }
 body.lovebites .workspace-tab-header.is-active .workspace-tab-header-inner { opacity: 1; }
 body.lovebites .workspace-tab-header .workspace-tab-header-inner::after {
@@ -253,16 +251,18 @@ body.lovebites .nav-folder-title { border-radius: 8px; }
 body.lovebites:not(.lb-no-motion) .nav-file-title,
 body.lovebites:not(.lb-no-motion) .nav-folder-title { transition: padding-left .25s var(--lb-ease), background .2s ease, color .2s ease; }
 body.lovebites:not(.lb-no-motion) .nav-file-title:hover { padding-left: calc(var(--nav-item-padding-left, 24px) + 6px); }
-body.lovebites .nav-file-title.is-active { background: color-mix(in srgb, var(--lb-accent) 12%, transparent) !important; color: var(--lb-accent) !important; box-shadow: inset 2px 0 0 var(--lb-accent); }
+body.lovebites { --nav-item-background-active: color-mix(in srgb, var(--lb-accent) 12%, transparent); --nav-item-color-active: var(--lb-accent); }
+body.lovebites .nav-file-title.is-active { box-shadow: inset 2px 0 0 var(--lb-accent); }
 body.lovebites .nav-folder-title[data-path="Reading"] .nav-folder-title-content::before { content: "❦ "; color: var(--lb-accent); }
 body.lovebites .nav-folder-title[data-path="Fleeting"] .nav-folder-title-content::before { content: "✦ "; color: var(--lb-accent-2); }
 body.lovebites .nav-folder-title[data-path="Templates"] .nav-folder-title-content::before { content: "◇ "; color: var(--lb-faint); }
 
 /* Modals, palette and menus bloom open over a soft blur */
-body.lovebites .modal-container .modal-bg { backdrop-filter: blur(6px) saturate(1.2); background: color-mix(in srgb, var(--lb-bg) 45%, transparent) !important; }
+body.lovebites .modal-container .modal-bg { backdrop-filter: blur(6px) saturate(1.2); }
+body.lovebites { --background-modifier-cover: color-mix(in srgb, var(--lb-bg) 45%, transparent); }
 body.lovebites .modal,
 body.lovebites .prompt,
-body.lovebites .menu { border-radius: 16px !important; border: 1px solid var(--lb-line) !important; box-shadow: 0 24px 60px -20px rgba(0,0,0,.45) !important; }
+body.lovebites .menu { border-radius: 16px; border: 1px solid var(--lb-line); box-shadow: 0 24px 60px -20px rgba(0,0,0,.45); }
 body.lovebites:not(.lb-no-motion) :is(.modal, .prompt) { animation: lb-bloom-in .32s var(--lb-ease); }
 body.lovebites:not(.lb-no-motion) .menu { animation: lb-bloom-in .2s var(--lb-ease); transform-origin: top left; }
 @keyframes lb-bloom-in { from { opacity: 0; transform: scale(.94) translateY(6px); filter: blur(4px); } }
@@ -296,10 +296,6 @@ body.lovebites .graph-view.color-fill-focused,
 body.lovebites .graph-view.color-fill-highlight { color: var(--lb-accent-2); }
 body.lovebites .graph-view.color-line { color: var(--lb-line); }
 
-/* stillness: LoveBites Bloom adds .lb-calm when you choose to follow macOS Reduce Motion */
-body.lovebites.lb-calm *,
-body.lovebites.lb-calm *::before,
-body.lovebites.lb-calm *::after { animation: none !important; transition: none !important; }
 
 
 /* Rewards: gliding caret, petals, milestones, daily ring */
@@ -378,7 +374,6 @@ body.lb-glide .markdown-source-view .cm-cursorLayer { visibility: hidden; }
 .lb-ring.is-done .lb-ring-text { color: var(--lb-accent, #ff5a6f); }
 @keyframes lb-pulse { 40% { transform: rotate(-90deg) scale(1.6); } }
 
-body.lb-calm *, body.lb-calm *::before, body.lb-calm *::after { animation: none !important; transition: none !important; }
 
 
 /* a custom accent from settings wins over the palette, with or without the full look */
@@ -386,14 +381,14 @@ body.lb-custom-accent.theme-light, body.lb-custom-accent.theme-dark { --lb-accen
 
 
 /* Typewriter scrolling: room below the last line so it can sit at the typing position too */
-body.lb-typewriter .markdown-source-view.mod-cm6 .cm-sizer { padding-bottom: 60vh !important; }
+body.lb-typewriter .markdown-source-view.mod-cm6 .cm-sizer { padding-bottom: 60vh; }
 
 
 /* ============================ statistics panel ============================ */
 .theme-light { --lb-h0: #efe4e1; --lb-h1: #ffd3d9; --lb-h2: #ff9aa8; --lb-h3: #ff5a6f; --lb-h4: #c8102e; }
 .theme-dark  { --lb-h0: #2f2629; --lb-h1: #5a2a35; --lb-h2: #8f3446; --lb-h3: #d24a60; --lb-h4: #ff7d8f; }
 
-.lb-stats { padding: 22px 20px 40px !important; font-family: var(--font-text); }
+.workspace-leaf-content .view-content.lb-stats { padding: 22px 20px 40px; font-family: var(--font-text); }
 .lb-eyebrow { font-family: var(--font-interface); font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--text-faint); }
 .lb-stats-title { font-family: "LoveBites Fraunces", "Fraunces", var(--font-text); font-style: italic; font-size: 34px; line-height: 1.1; color: var(--text-normal);
   font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144, "wght" 380; margin: 2px 0 14px; }
@@ -458,7 +453,7 @@ body.lb-typewriter .markdown-source-view.mod-cm6 .cm-sizer { padding-bottom: 60v
 
 
 /* ============================ status bar mode pill ============================ */
-.lb-mode { display: inline-flex; align-items: center; gap: 5px; padding: 1px 9px !important; border-radius: 99px; cursor: pointer;
+.status-bar-item.lb-mode { display: inline-flex; align-items: center; gap: 5px; padding: 1px 9px; border-radius: 99px; cursor: pointer;
   background: color-mix(in srgb, var(--lb-accent, #ff5a6f) 10%, transparent); color: var(--text-muted); transition: background .25s ease, color .25s ease; }
 .lb-mode:hover { background: color-mix(in srgb, var(--lb-accent, #ff5a6f) 20%, transparent); color: var(--text-normal); }
 .lb-mode-glyph { color: var(--lb-accent, #ff5a6f); }
@@ -474,13 +469,13 @@ body.lb-reading {
 body.lb-reading .workspace-tab-header-container,
 body.lb-reading .workspace-leaf-content[data-type="markdown"] .view-header,
 body.lb-reading .workspace-ribbon,
-body.lb-reading .status-bar > :not(.lb-mode) { display: none !important; }
-body.lb-reading .status-bar { background: transparent !important; backdrop-filter: none; }
-body.lb-reading .workspace-leaf-content[data-type="markdown"] .view-content::before { display: none !important; } /* no aurora on the desk */
+body.lb-reading .status-bar > :not(.lb-mode) { display: none; }
+body.lb-reading .status-bar { background: transparent; backdrop-filter: none; }
+body.lb-reading .workspace-leaf-content[data-type="markdown"] .view-content::before { display: none; } /* no aurora on the desk */
 body.lb-reading .workspace-leaf-content[data-type="markdown"],
 body.lb-reading .workspace-split.mod-root,
 body.lb-reading .workspace-tabs, body.lb-reading .workspace-tab-container {
-  background: radial-gradient(ellipse 70% 60% at 50% 35%, color-mix(in srgb, var(--lb-desk) 80%, #6b4a3a), var(--lb-desk)) !important;
+  background: radial-gradient(ellipse 70% 60% at 50% 35%, color-mix(in srgb, var(--lb-desk) 80%, #6b4a3a), var(--lb-desk));
 }
 
 /* the page */
@@ -490,7 +485,7 @@ body.lb-reading .markdown-reading-view .markdown-preview-sizer {
   --text-accent: var(--lb-paper-accent); --lb-accent: var(--lb-paper-accent); --link-color: var(--lb-paper-accent);
   --h1-color: var(--lb-paper-ink); --h2-color: var(--lb-paper-ink); --h3-color: var(--lb-paper-soft);
   --text-selection: rgba(163, 38, 58, .18);
-  position: relative; max-width: 38em !important; margin: 0 auto 14vh !important; padding: 10vh 4.4em 11vh !important; min-height: 92vh !important;
+  position: relative; max-width: 38em; margin: 0 auto 14vh; padding: 10vh 4.4em 11vh; min-height: 92vh;
   color: var(--lb-paper-ink);
   background-color: var(--lb-paper);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.35 0 0 0 0 0.25 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -514,17 +509,19 @@ body.lb-reading .markdown-reading-view .markdown-preview-sizer::before {
 }
 
 /* chapter opening: title, ornament */
-body.lb-reading .metadata-container, body.lb-reading .frontmatter-container { display: none !important; }
-body.lb-reading .inline-title {
-  text-align: center; margin: 4vh 0 0; background: none !important; animation: none !important;
-  color: var(--lb-paper-ink) !important; -webkit-text-fill-color: currentColor;
+body.lb-reading { --metadata-display-reading: none; }
+body.lb-reading .frontmatter-container { display: none; }
+body.lb-reading .markdown-reading-view .inline-title {
+  text-align: center; margin: 4vh 0 0; background: none; animation: none;
+  color: var(--lb-paper-ink); -webkit-text-fill-color: currentColor;
   font-size: 2.3em; font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144, "wght" 360;
 }
 body.lb-reading .inline-title::after { content: "❦"; display: block; font-size: .42em; font-style: normal; color: var(--lb-paper-accent); margin: .7em 0 2.6em; }
 
 /* paragraphs set like a book: no gaps, indented, justified */
-body.lb-reading .markdown-preview-sizer .el-p > p { margin: 0; text-indent: 1.5em; }
-body.lb-reading .markdown-preview-sizer :is(.mod-header, .mod-frontmatter, .el-h1, .el-h2, .el-h3, .el-hr, .el-blockquote, .el-ul, .el-ol) + .el-p > p { text-indent: 0; }
+body.lb-reading .markdown-preview-sizer .el-p > p { margin: 0; }
+body.lb-reading .markdown-preview-sizer .el-p > p::before { content: ""; display: inline-block; width: 1.5em; }
+body.lb-reading .markdown-preview-sizer :is(.mod-header, .mod-frontmatter, .el-h1, .el-h2, .el-h3, .el-hr, .el-blockquote, .el-ul, .el-ol) + .el-p > p::before { display: none; }
 body.lb-reading .markdown-preview-sizer :is(.mod-header, .mod-frontmatter, .el-h1, .el-h2, .el-h3, .el-hr) + .el-p > p::first-line { font-variant: small-caps; letter-spacing: .05em; }
 /* the opening paragraph: after the title, or after the hidden frontmatter block when there is one */
 body.lb-reading .markdown-preview-sizer :is(.mod-header, .mod-frontmatter) + .el-p > p::first-letter {
@@ -532,7 +529,8 @@ body.lb-reading .markdown-preview-sizer :is(.mod-header, .mod-frontmatter) + .el
   color: var(--lb-paper-accent); font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144, "wght" 420;
 }
 body.lb-reading .markdown-preview-sizer :is(h1, h2) { text-align: center; font-variant: small-caps; letter-spacing: .12em; font-style: normal; font-size: 1.15em; margin: 2.6em 0 1.4em; }
-body.lb-reading .markdown-preview-sizer :is(h1, h2)::after { margin-inline: auto; width: 1.4em !important; background: var(--lb-paper-accent) !important; }
+/* as specific as the look's hover rule, and later, so it wins */
+body.lb-reading .markdown-reading-view .markdown-preview-view .markdown-preview-sizer :is(h1, h2)::after { margin-inline: auto; width: 1.4em; background: var(--lb-paper-accent); }
 body.lb-reading .markdown-preview-sizer h3 { text-align: center; font-style: italic; font-size: 1.05em; margin: 2em 0 1em; }
 body.lb-reading .markdown-preview-sizer blockquote { color: var(--lb-paper-soft); text-align: left; margin: 1.4em 1.2em; }
 body.lb-reading .markdown-preview-sizer hr::before { content: "⁂"; color: var(--lb-paper-soft); }

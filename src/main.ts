@@ -107,7 +107,7 @@ export default class LoveBitesPlugin extends Plugin {
 		const s = this.settings, calm = this.isCalm();
 		for (const { body: b } of this.docs) {
 			b.toggleClass("lovebites", s.look);
-			b.toggleClass("lb-no-motion", !s.motion);
+			b.toggleClass("lb-no-motion", !s.motion || calm); // the look's animations are all gated on this
 			b.toggleClass("lb-no-aurora", !s.aurora);
 			b.toggleClass("lb-no-grain", !s.grain);
 			b.toggleClass("lb-calm", calm);
