@@ -132,9 +132,19 @@ body.lovebites .markdown-rendered blockquote {
     font-family: var(--lb-display); font-style: italic; font-size: 1.12em; color: var(--lb-ink-soft);
     font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 36, "wght" 360;
 }
-body.lovebites .markdown-rendered blockquote::before {
-    content: "“"; position: absolute; left: -.15em; top: -.35em; font-size: 3em; line-height: 1;
-    color: var(--lb-accent); opacity: .55; font-family: var(--lb-display);
+/* a matched pair of marks that sit in the text: “ opens the first line, ” closes the last */
+body.lovebites .markdown-rendered blockquote > p:first-child::before,
+body.lovebites .markdown-rendered blockquote > p:last-child::after {
+    font-family: var(--lb-display); font-style: normal; font-size: 1.6em; line-height: 0;
+    color: var(--lb-accent); opacity: .7; vertical-align: -.28em;
+}
+body.lovebites .markdown-rendered blockquote > p:first-child::before { content: "“"; margin-right: .08em; }
+body.lovebites .markdown-rendered blockquote > p:last-child::after { content: "”"; margin-left: .06em; }
+/* quotes with an attribution close before the dash (placed by markAttribution) */
+body.lovebites .markdown-rendered blockquote.lb-attributed > p:last-child::after { content: none; }
+body.lovebites .markdown-rendered blockquote .lb-close {
+    font-family: var(--lb-display); font-style: normal; font-size: 1.6em; line-height: 0;
+    color: var(--lb-accent); opacity: .7; vertical-align: -.28em; margin-left: .06em;
 }
 body.lovebites .markdown-rendered hr { border: none; text-align: center; margin: 2.8em 0; overflow: visible; }
 body.lovebites .markdown-rendered hr::before { content: "❦"; color: var(--lb-accent); font-size: 1.2em; }
@@ -464,12 +474,23 @@ body.lb-reading {
   --background-primary: var(--lb-desk); --background-secondary: var(--lb-desk); /* everything but the page becomes desk */ --lb-paper-ink: #2d2522; --lb-paper-soft: #7a685f; --lb-paper-faint: #b3a293; --lb-paper-accent: #a3263a;
 }
 .theme-light.lb-reading { --lb-desk: #cdbcac; --lb-paper: #fbf6ee; }
+body.lb-reading { --lb-edge-1: #e3d8c5; --lb-edge-2: #efe6d6; --lb-edge-3: #d6c9b2; --lb-edge-4: #eadfcd; --lb-edge-5: #cfc1a8; }
+
+/* Night page: the same book, lamp off */
+body.lb-reading.lb-page-night {
+  --lb-desk: #0e0a0b; --lb-paper: #252022; --lb-paper-ink: #ece0e2; --lb-paper-soft: #b9a4aa; --lb-paper-faint: #85727a; --lb-paper-accent: #ff8597;
+  --lb-edge-1: #1c1719; --lb-edge-2: #2c2528; --lb-edge-3: #171315; --lb-edge-4: #29222a; --lb-edge-5: #141012;
+  --text-selection: rgba(255, 133, 151, .22);
+}
 
 /* the app falls away */
 body.lb-reading .workspace-tab-header-container,
 body.lb-reading .workspace-leaf-content[data-type="markdown"] .view-header,
 body.lb-reading .workspace-ribbon,
-body.lb-reading .status-bar > :not(.lb-mode) { display: none; }
+body.lb-reading .status-bar > :not(.lb-mode, .lb-page-toggle) { display: none; }
+.lb-page-toggle { display: none; }
+body.lb-reading .status-bar-item.lb-page-toggle { display: inline-flex; align-items: center; gap: 5px; padding: 1px 9px; border-radius: 99px; cursor: pointer; color: var(--text-muted); background: color-mix(in srgb, var(--lb-paper-accent) 12%, transparent); }
+body.lb-reading .status-bar-item.lb-page-toggle:hover { color: var(--text-normal); }
 body.lb-reading .status-bar { background: transparent; backdrop-filter: none; }
 body.lb-reading .workspace-leaf-content[data-type="markdown"] .view-content::before { display: none; } /* no aurora on the desk */
 body.lb-reading .workspace-leaf-content[data-type="markdown"],
@@ -481,6 +502,7 @@ body.lb-reading .workspace-tabs, body.lb-reading .workspace-tab-container {
 /* the page */
 body.lb-reading .markdown-reading-view .markdown-preview-view { background: transparent; padding: 8vh 24px 0; }
 body.lb-reading .markdown-reading-view .markdown-preview-sizer {
+  --lb-ink: var(--lb-paper-ink); --lb-ink-soft: var(--lb-paper-soft); --lb-faint: var(--lb-paper-faint); --lb-line: var(--lb-edge-1);
   --text-normal: var(--lb-paper-ink); --text-muted: var(--lb-paper-soft); --text-faint: var(--lb-paper-faint);
   --text-accent: var(--lb-paper-accent); --lb-accent: var(--lb-paper-accent); --link-color: var(--lb-paper-accent);
   --h1-color: var(--lb-paper-ink); --h2-color: var(--lb-paper-ink); --h3-color: var(--lb-paper-soft);
@@ -493,7 +515,7 @@ body.lb-reading .markdown-reading-view .markdown-preview-sizer {
   box-shadow:
     inset 26px 0 34px -26px rgba(70, 40, 25, .34),      /* gutter */
     inset -1px 0 0 rgba(255, 255, 255, .5),
-    1px 1px 0 #e3d8c5, 3px 2px 0 #efe6d6, 4px 3px 0 #d6c9b2, 6px 4px 0 #eadfcd, 7px 5px 0 #cfc1a8, /* stacked page edges */
+    1px 1px 0 var(--lb-edge-1), 3px 2px 0 var(--lb-edge-2), 4px 3px 0 var(--lb-edge-3), 6px 4px 0 var(--lb-edge-4), 7px 5px 0 var(--lb-edge-5), /* stacked page edges */
     0 46px 80px -30px rgba(0, 0, 0, .75), 0 14px 30px -12px rgba(0, 0, 0, .45);
   font-family: "Iowan Old Style", "New York", Palatino, Georgia, serif;
   font-size: 19px; line-height: 1.62; text-align: justify; hyphens: auto; -webkit-hyphens: auto;

@@ -15,6 +15,7 @@ export interface LoveBitesSettings {
 	petals: boolean;
 	milestones: boolean;
 	followSystemMotion: boolean;
+	readingPage: "auto" | "paper" | "night";
 	typewriter: boolean;
 	typewriterOffset: number; // 0–1 of the editor height
 	goal: number;
@@ -36,6 +37,7 @@ export const DEFAULT_SETTINGS: LoveBitesSettings = {
 	petals: true,
 	milestones: true,
 	followSystemMotion: false,
+	readingPage: "auto",
 	typewriter: true,
 	typewriterOffset: 0.45,
 	goal: 500,
@@ -88,6 +90,13 @@ export class LoveBitesSettingTab extends PluginSettingTab {
 					{ name: "Gliding caret", desc: "The caret slides between positions instead of jumping.", control: { type: "toggle", key: "glide" } },
 					{ name: "Petals while typing", desc: "Tiny hearts and petals drift up from the caret.", control: { type: "toggle", key: "petals" } },
 					{ name: "Follow system reduce motion", desc: "When on, everything goes still whenever reduce motion is enabled in your operating system.", aliases: ["accessibility"], control: { type: "toggle", key: "followSystemMotion" } },
+				],
+			},
+			{
+				type: "group",
+				heading: "Reading mode",
+				items: [
+					{ name: "Page", desc: "Paper is a cream page, Night a dark one. Auto follows the app theme. You can also switch from the status bar while reading.", control: { type: "dropdown", key: "readingPage", options: { auto: "Auto", paper: "Paper", night: "Night" } } },
 				],
 			},
 			{

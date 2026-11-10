@@ -110,9 +110,19 @@ body.lovebites .markdown-rendered blockquote {
     font-family: var(--lb-display); font-style: italic; font-size: 1.12em; color: var(--lb-ink-soft);
     font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 36, "wght" 360;
 }
-body.lovebites .markdown-rendered blockquote::before {
-    content: "“"; position: absolute; left: -.15em; top: -.35em; font-size: 3em; line-height: 1;
-    color: var(--lb-accent); opacity: .55; font-family: var(--lb-display);
+/* a matched pair of marks that sit in the text: “ opens the first line, ” closes the last */
+body.lovebites .markdown-rendered blockquote > p:first-child::before,
+body.lovebites .markdown-rendered blockquote > p:last-child::after {
+    font-family: var(--lb-display); font-style: normal; font-size: 1.6em; line-height: 0;
+    color: var(--lb-accent); opacity: .7; vertical-align: -.28em;
+}
+body.lovebites .markdown-rendered blockquote > p:first-child::before { content: "“"; margin-right: .08em; }
+body.lovebites .markdown-rendered blockquote > p:last-child::after { content: "”"; margin-left: .06em; }
+/* quotes with an attribution close before the dash (placed by markAttribution) */
+body.lovebites .markdown-rendered blockquote.lb-attributed > p:last-child::after { content: none; }
+body.lovebites .markdown-rendered blockquote .lb-close {
+    font-family: var(--lb-display); font-style: normal; font-size: 1.6em; line-height: 0;
+    color: var(--lb-accent); opacity: .7; vertical-align: -.28em; margin-left: .06em;
 }
 body.lovebites .markdown-rendered hr { border: none; text-align: center; margin: 2.8em 0; overflow: visible; }
 body.lovebites .markdown-rendered hr::before { content: "❦"; color: var(--lb-accent); font-size: 1.2em; }

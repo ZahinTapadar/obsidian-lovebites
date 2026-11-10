@@ -19,6 +19,7 @@ export default class LoveBitesPlugin extends Plugin {
 	private ringFg!: SVGCircleElement;
 	private ringText!: HTMLElement;
 	private modeEl!: HTMLElement;
+	private pageEl!: HTMLElement;
 	private systemReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
 	private reading = false;
 	private view: EditorView | null = null;
@@ -62,10 +63,21 @@ export default class LoveBitesPlugin extends Plugin {
 		this.modeEl = this.addStatusBarItem();
 		this.modeEl.addClass("lb-mode");
 		this.registerDomEvent(this.modeEl, "click", () => void this.setReading(!this.reading));
+		this.pageEl = this.addStatusBarItem();
+		this.pageEl.addClass("lb-page-toggle");
+		this.renderPageToggle();
+		this.registerDomEvent(this.pageEl, "click", () => {
+			this.settings.readingPage = this.isNightPage() ? "paper" : "night";
+			this.requestSave();
+			this.applyAppearance();
+		});
+		// Auto pages follow the app theme, which can change while reading
+		this.registerEvent(this.app.workspace.on("css-change", () => this.applyAppearance()));
 		this.renderRing();
 		this.renderModePill();
 
 		this.registerView(STATS_VIEW, (leaf) => new StatsView(leaf, this));
+		this.registerMarkdownPostProcessor((el) => markAttribution(el));
 		this.addRibbonIcon("flower-2", "Open writing statistics", () => void this.openStats());
 		this.addCommand({ id: "open-statistics", name: "Open writing statistics", callback: () => void this.openStats() });
 		this.addCommand({ id: "toggle-reading-mode", name: "Toggle Reading mode", callback: () => void this.setReading(!this.reading) });
@@ -86,7 +98,7 @@ export default class LoveBitesPlugin extends Plugin {
 
 	onunload(): void {
 		[this.layer, this.caret, this.progress, this.folio].forEach((el) => el.remove());
-		for (const doc of this.docs) doc.body.removeClass("lovebites", "lb-no-motion", "lb-no-aurora", "lb-no-grain", "lb-custom-accent", "lb-calm", "lb-glide", "lb-typewriter", "lb-reading");
+		for (const doc of this.docs) doc.body.removeClass("lovebites", "lb-no-motion", "lb-no-aurora", "lb-no-grain", "lb-custom-accent", "lb-calm", "lb-glide", "lb-typewriter", "lb-reading", "lb-page-night");
 	}
 
 	async loadSettings(): Promise<void> {
@@ -103,6 +115,11 @@ export default class LoveBitesPlugin extends Plugin {
 		return this.settings.followSystemMotion && this.systemReduce.matches;
 	}
 
+	private isNightPage(): boolean {
+		const p = this.settings.readingPage;
+		return p === "night" || (p === "auto" && this.mainDoc.body.hasClass("theme-dark"));
+	}
+
 	applyAppearance(): void {
 		const s = this.settings, calm = this.isCalm();
 		for (const { body: b } of this.docs) {
@@ -114,6 +131,7 @@ export default class LoveBitesPlugin extends Plugin {
 			b.toggleClass("lb-glide", s.glide && !calm);
 			b.toggleClass("lb-typewriter", s.typewriter);
 			b.toggleClass("lb-custom-accent", !!s.accent);
+			b.toggleClass("lb-page-night", this.isNightPage());
 			b.setCssProps({
 				"--lb-accent-user": s.accent || "#ff5a6f",
 				"--lb-measure": `${s.measure}em`,
@@ -121,6 +139,7 @@ export default class LoveBitesPlugin extends Plugin {
 				"--lb-line-height": `${s.lineHeight}`,
 			});
 		}
+		this.renderPageToggle();
 		this.renderRing?.();
 		this.refreshStats?.();
 	}
@@ -355,11 +374,42 @@ export default class LoveBitesPlugin extends Plugin {
 		this.folio.setText(pct >= 0.995 ? "fin" : `${Math.round(pct * 100)}%  ·  ${left} min left`);
 	}
 
+	private renderPageToggle(): void {
+		if (!this.pageEl) return;
+		const night = this.isNightPage();
+		this.pageEl.empty();
+		this.pageEl.createSpan({ text: night ? "☾" : "☀" });
+		this.pageEl.createSpan({ text: night ? "Night" : "Paper" });
+		setTooltip(this.pageEl, night ? "Switch to the paper page" : "Switch to the night page", { placement: "top" });
+	}
+
 	private renderModePill(): void {
 		this.modeEl.empty();
 		this.modeEl.createSpan({ cls: "lb-mode-glyph", text: this.reading ? "❦" : "✎" });
 		this.modeEl.createSpan({ text: this.reading ? "Reading" : "Writing" });
 		this.modeEl.toggleClass("is-reading", this.reading);
 		setTooltip(this.modeEl, this.reading ? "Back to Writing (Esc)" : "Read as a book", { placement: "top" });
+	}
+}
+
+const ATTRIBUTION = /\s[—–-]\s(?=\S)/g; // " — Reen": a spaced dash before who said it
+
+/** In a quote that ends with an attribution, close the quote before the dash instead of after the name. */
+export function markAttribution(el: HTMLElement): void {
+	for (const bq of Array.from(el.querySelectorAll("blockquote"))) {
+		const p = bq.querySelector(":scope > p:last-of-type");
+		if (!p) continue;
+		const texts: Text[] = [];
+		const walker = activeDocument.createTreeWalker(p, NodeFilter.SHOW_TEXT);
+		while (walker.nextNode()) texts.push(walker.currentNode as Text);
+		for (let i = texts.length - 1; i >= 0; i--) {
+			const matches = Array.from(texts[i].data.matchAll(ATTRIBUTION));
+			const m = matches[matches.length - 1];
+			if (!m || m.index === undefined) continue;
+			const rest = texts[i].splitText(m.index);
+			rest.before(createSpan({ cls: "lb-close", text: "”" }));
+			bq.addClass("lb-attributed");
+			break;
+		}
 	}
 }
