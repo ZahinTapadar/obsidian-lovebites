@@ -1,4 +1,4 @@
-import { MarkdownView, Plugin, WorkspaceWindow, debounce, setTooltip } from "obsidian";
+import { MarkdownView, Plugin, TAbstractFile, TFile, WorkspaceWindow, debounce, editorInfoField, setTooltip } from "obsidian";
 import { EditorView, ViewUpdate } from "@codemirror/view";
 import { DEFAULT_SETTINGS, LoveBitesSettingTab, LoveBitesSettings } from "./settings";
 import { STATS_VIEW, StatsView } from "./stats-view";
@@ -19,6 +19,7 @@ export default class LoveBitesPlugin extends Plugin {
 	private ringFg!: SVGCircleElement;
 	private ringText!: HTMLElement;
 	private modeEl!: HTMLElement;
+	private counts = new Map<string, number>(); // words per note, so a change from anywhere is credited once
 	private pageEl!: HTMLElement;
 	private systemReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
 	private reading = false;
@@ -66,11 +67,7 @@ export default class LoveBitesPlugin extends Plugin {
 		this.pageEl = this.addStatusBarItem();
 		this.pageEl.addClass("lb-page-toggle");
 		this.renderPageToggle();
-		this.registerDomEvent(this.pageEl, "click", () => {
-			this.settings.readingPage = this.isNightPage() ? "paper" : "night";
-			this.requestSave();
-			this.applyAppearance();
-		});
+		this.registerDomEvent(this.pageEl, "click", () => this.togglePage());
 		// Auto pages follow the app theme, which can change while reading
 		this.registerEvent(this.app.workspace.on("css-change", () => this.applyAppearance()));
 		this.renderRing();
@@ -81,6 +78,10 @@ export default class LoveBitesPlugin extends Plugin {
 		this.addRibbonIcon("flower-2", "Open writing statistics", () => void this.openStats());
 		this.addCommand({ id: "open-statistics", name: "Open writing statistics", callback: () => void this.openStats() });
 		this.addCommand({ id: "toggle-reading-mode", name: "Toggle Reading mode", callback: () => void this.setReading(!this.reading) });
+		this.addCommand({ id: "toggle-reading-page", name: "Switch reading page between paper and night", callback: () => this.togglePage() });
+		// phones hide the status bar, so the mode switches also live in the ribbon
+		this.addRibbonIcon("book-open", "Toggle Reading mode", () => void this.setReading(!this.reading));
+		this.addRibbonIcon("sun-moon", "Switch reading page between paper and night", () => this.togglePage());
 
 		this.registerEditorExtension(EditorView.updateListener.of((u) => this.onUpdate(u)));
 		this.registerDomEvent(this.mainDoc, "scroll", (e) => this.onScroll(e), { capture: true, passive: true });
@@ -92,7 +93,7 @@ export default class LoveBitesPlugin extends Plugin {
 		this.registerEvent(this.app.workspace.on("layout-change", reset));
 		this.registerEvent(this.app.workspace.on("active-leaf-change", () => { reset(); if (this.reading) void this.applyModeToActive(); this.refreshStats(); }));
 		this.registerEvent(this.app.workspace.on("file-open", () => { if (this.reading) window.setTimeout(() => void this.applyModeToActive(), 30); }));
-		this.app.workspace.onLayoutReady(() => this.restoreSides());
+		this.app.workspace.onLayoutReady(() => { this.restoreSides(); void this.watchVault(); });
 		this.addSettingTab(new LoveBitesSettingTab(this.app, this));
 	}
 
@@ -113,6 +114,35 @@ export default class LoveBitesPlugin extends Plugin {
 	/** True when the user asked to follow the system's reduce-motion setting and it is on. */
 	isCalm(): boolean {
 		return this.settings.followSystemMotion && this.systemReduce.matches;
+	}
+
+	private togglePage(): void {
+		this.settings.readingPage = this.isNightPage() ? "paper" : "night";
+		this.requestSave();
+		this.applyAppearance();
+	}
+
+	/** Baseline every note's word count, then credit increases however they happen (typing, paste, Copilot, sync). */
+	private async watchVault(): Promise<void> {
+		const { vault } = this.app;
+		const wordsIn = async (f: TFile) => countWords(stripFrontmatter(await vault.cachedRead(f)));
+		for (const f of vault.getMarkdownFiles()) this.counts.set(f.path, await wordsIn(f));
+		const isNote = (f: TAbstractFile): f is TFile => f instanceof TFile && f.extension === "md";
+		const credit = async (f: TFile, fresh: boolean) => {
+			const now = await wordsIn(f);
+			const before = fresh ? 0 : this.counts.get(f.path);
+			this.counts.set(f.path, now);
+			if (this.settings.countAllWords && before !== undefined && now > before) this.addWords(now - before);
+		};
+		// registered after the startup scan, so files Obsidian announces while loading are not counted as new
+		this.registerEvent(vault.on("modify", (f) => { if (isNote(f)) void credit(f, false); }));
+		this.registerEvent(vault.on("create", (f) => { if (isNote(f)) void credit(f, true); }));
+		this.registerEvent(vault.on("delete", (f) => { this.counts.delete(f.path); }));
+		this.registerEvent(vault.on("rename", (f, old) => {
+			const n = this.counts.get(old);
+			this.counts.delete(old);
+			if (n !== undefined) this.counts.set(f.path, n);
+		}));
 	}
 
 	private isNightPage(): boolean {
@@ -155,6 +185,10 @@ export default class LoveBitesPlugin extends Plugin {
 		const edited = u.docChanged && u.transactions.some((t) => t.isUserEvent("input") || t.isUserEvent("delete"));
 		const typed = u.docChanged && u.transactions.some((t) => t.isUserEvent("input.type"));
 		const keyMove = u.selectionSet && u.transactions.some((t) => t.isUserEvent("select") && !t.isUserEvent("select.pointer"));
+		// your own edits move the baseline straight away, so the save that follows is not counted again;
+		// outside changes (Copilot, sync) are not user events and get credited by the vault watcher instead
+		const path = edited ? u.state.field(editorInfoField, false)?.file?.path : undefined;
+		if (path) this.counts.set(path, countWords(stripFrontmatter(u.state.doc.toString())));
 		if (typed) {
 			const now = Date.now();
 			if (this.lastType && now - this.lastType < IDLE_MS) this.day().s += (now - this.lastType) / 1000;

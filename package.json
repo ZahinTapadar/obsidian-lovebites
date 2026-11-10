@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-lovebites",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "An animated, rewarding writing pad and book-style reader for Obsidian.",
 	"main": "main.js",
 	"scripts": {

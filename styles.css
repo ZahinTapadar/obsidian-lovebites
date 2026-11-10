@@ -568,3 +568,11 @@ body.lb-reading .markdown-preview-sizer a { color: var(--lb-paper-accent); }
   transition: opacity .4s ease; }
 .theme-light .lb-folio { color: rgba(80, 60, 50, .55); }
 body.lb-reading .lb-progress, body.lb-reading .lb-folio { opacity: 1; }
+
+/* phones: a full-width page with lighter margins and shallower edges */
+@media (max-width: 600px) {
+  body.lb-reading .markdown-reading-view .markdown-preview-view { padding: 3vh 10px 0; }
+  body.lb-reading .markdown-reading-view .markdown-preview-sizer { padding: 7vh 1.4em 8vh; font-size: 17px; margin-bottom: 8vh; }
+  body.lb-reading .markdown-reading-view .markdown-preview-sizer::before { top: 2.6vh; font-size: 10.5px; }
+  body.lb-reading .inline-title::after { margin-bottom: 1.8em; }
+}

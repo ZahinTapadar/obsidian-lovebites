@@ -14,6 +14,7 @@ export interface LoveBitesSettings {
 	glide: boolean;
 	petals: boolean;
 	milestones: boolean;
+	countAllWords: boolean;
 	followSystemMotion: boolean;
 	readingPage: "auto" | "paper" | "night";
 	typewriter: boolean;
@@ -36,6 +37,7 @@ export const DEFAULT_SETTINGS: LoveBitesSettings = {
 	glide: true,
 	petals: true,
 	milestones: true,
+	countAllWords: true,
 	followSystemMotion: false,
 	readingPage: "auto",
 	typewriter: true,
@@ -112,7 +114,8 @@ export class LoveBitesSettingTab extends PluginSettingTab {
 				heading: "Writing goal",
 				items: [
 					{ name: "Milestones", desc: "A word bloom every few words, and a celebration at your daily goal.", control: { type: "toggle", key: "milestones" } },
-					{ name: "Daily goal", desc: "Words typed per day. Pasted text does not count.", control: { type: "number", key: "goal", min: 1, step: 1 } },
+					{ name: "Count words from anywhere", desc: "Count every new word that lands in your notes: typed, pasted, or written by another plugin such as Copilot. Turn off to count only what you type in the editor.", control: { type: "toggle", key: "countAllWords" } },
+					{ name: "Daily goal", desc: "New words per day.", control: { type: "number", key: "goal", min: 1, step: 1 } },
 					{ name: "Bloom every", desc: "Words between milestone blooms.", control: { type: "number", key: "every", min: 1, step: 1 } },
 				],
 			},
